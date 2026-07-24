@@ -10,7 +10,7 @@
 
 namespace sv {
 
-EmotionResult MockEmotionDetector::detect(const std::string& imageData) {
+EmotionResult MockEmotionDetector::detect(const std::string& /* imageData */) {
     auto& logger = Logger::getInstance();
     logger.info("MockEmotionDetector: Processing image");
     

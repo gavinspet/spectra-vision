@@ -4,7 +4,7 @@
 #include "model_factory.hpp"
 #include "logger.hpp"
 #include <string>
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 
 namespace sv {
 
