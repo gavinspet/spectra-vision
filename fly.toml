@@ -1,0 +1,42 @@
+# Fly.io Configuration
+app = "spectra-vision-api"
+
+[build]
+  dockerfile = "./Dockerfile"
+
+[env]
+  ENVIRONMENT = "production"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+  
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 1000
+    soft_limit = 100
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["http", "tls"]
+
+[[services.http_checks]]
+  interval = 10000
+  timeout = 5000
+  grace_period = "10s"
+  method = "get"
+  path = "/health"
+
+[checks]
+  [checks.status]
+    type = "http"
+    interval = "10s"
+    timeout = "5s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/health"
