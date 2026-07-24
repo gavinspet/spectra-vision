@@ -228,11 +228,11 @@ public:
   },
   {
     icon: '♾️', title: 'Singleton Pattern',
-    desc: "Meyer's Singleton ensures a single Logger instance across all translation units. Thread-safe by C++11 guarantee — no mutexes required.",
+    desc: "Meyer's Singleton ensures a single Logger instance across all translation units. Thread-safe by modern C++ guarantee — no mutexes required.",
     code: `class Logger {
 public:
   static Logger& getInstance() {
-    static Logger instance; // thread-safe (C++11)
+    static Logger instance; // thread-safe guarantee
     return instance;
   }
   Logger(const Logger&) = delete;
@@ -264,9 +264,9 @@ private:
 
 const METRICS = [
   { label: 'Avg Inference', value: '42ms', icon: '⚡' },
-  { label: 'C++ Standard', value: 'C++17', icon: '🔧' },
+  { label: 'Language', value: 'C++', icon: '🔧' },
   { label: 'API Endpoints', value: '3', icon: '🔗' },
-  { label: 'Design Patterns', value: '4', icon: '🏗' },
+  { label: 'Architecture', value: 'MVC', icon: '🏗' },
 ]
 
 export default function Home() {
@@ -278,13 +278,25 @@ export default function Home() {
   useEffect(() => {
     checkServer()
     // Dynamically inject face-api.js script — more reliable than next/script
+    // Check if already loaded (e.g. cached)
+    if (typeof window !== 'undefined' && window.faceapi) {
+      setFaceApiReady(true)
+      return
+    }
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js'
     script.async = true
     script.onload = () => setFaceApiReady(true)
     script.onerror = () => console.warn('face-api.js failed to load from CDN')
     document.head.appendChild(script)
-    return () => { if (document.head.contains(script)) document.head.removeChild(script) }
+    // Fallback poll in case onload doesn't fire
+    const poll = setInterval(() => {
+      if (window.faceapi) { setFaceApiReady(true); clearInterval(poll) }
+    }, 300)
+    return () => {
+      clearInterval(poll)
+      if (document.head.contains(script)) document.head.removeChild(script)
+    }
   }, [])
 
   const checkServer = async () => {
@@ -685,7 +697,7 @@ export default function Home() {
         .lp-conf-track{width:100%;height:6px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
         .lp-conf-fill{height:100%;width:94%;background:#FFD93D;border-radius:10px}
         .lp-json{font-size:.72em;color:#a8e6cf;font-family:monospace;background:rgba(0,0,0,.3);padding:10px;border-radius:8px;white-space:pre;width:100%}
-        .lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,6,18,.82);backdrop-filter:blur(6px)}
+        .lock-overlay{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;background:rgba(6,6,18,.82);backdrop-filter:blur(6px);padding:24px}
         .lock-card{background:rgba(15,15,35,.95);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:32px;max-width:480px;text-align:center}
         .lock-icon{font-size:44px;margin-bottom:16px}
         .lock-title{font-size:1.3em;font-weight:700;color:#fff;margin-bottom:10px}
