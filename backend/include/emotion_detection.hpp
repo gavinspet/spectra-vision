@@ -43,7 +43,7 @@ public:
 private:
     // Simulate different emotions based on input
     std::string simulateEmotionLabel(const std::string& imageData);
-    double simulateConfidence(const std::string& imageData);
+    double simulateConfidence();
 };
 
 } // namespace sv

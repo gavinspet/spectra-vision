@@ -60,7 +60,7 @@ EmotionResult AdvancedEmotionDetector::detect(const std::string& imageData) {
     ss << std::put_time(std::localtime(&time_t), "%Y-%m-%dT%H:%M:%S");
     
     std::string emotion = simulateEmotionLabel(imageData);
-    double confidence = simulateConfidence(imageData);
+    double confidence = simulateConfidence();
     
     // Map emotion to class ID
     int classId = 0;
@@ -92,7 +92,7 @@ std::string AdvancedEmotionDetector::simulateEmotionLabel(const std::string& ima
     return emotions[hash % emotions.size()];
 }
 
-double AdvancedEmotionDetector::simulateConfidence(const std::string& imageData) {
+double AdvancedEmotionDetector::simulateConfidence() {
     // Simulate confidence score
     static std::random_device rd;
     static std::mt19937 gen(rd());
