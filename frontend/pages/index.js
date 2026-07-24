@@ -279,7 +279,17 @@ export default function Home() {
   const [animRes, setAnimRes] = useState(false)
   const [scriptLoaded, setScriptLoaded] = useState(false)
 
-  useEffect(() => { checkServer() }, [])
+  useEffect(() => {
+    checkServer()
+    // Poll for face-api.js since beforeInteractive onLoad is unreliable
+    const interval = setInterval(() => {
+      if (typeof window !== 'undefined' && window.faceapi) {
+        setScriptLoaded(true)
+        clearInterval(interval)
+      }
+    }, 200)
+    return () => clearInterval(interval)
+  }, [])
 
   const checkServer = async () => {
     try {
@@ -324,8 +334,7 @@ export default function Home() {
       </Head>
       <Script
         src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"
-        strategy="beforeInteractive"
-        onLoad={() => setScriptLoaded(true)}
+        strategy="afterInteractive"
       />
 
       <div className="page">
@@ -341,8 +350,6 @@ export default function Home() {
               </div>
             </div>
             <div className="hdr-right">
-              <span className="chip chip-cpp">C++17</span>
-              <span className="chip chip-pat">4 Design Patterns</span>
               <span className={`pill pill-${serverStatus}`}>
                 <span className="pdot" />
                 {serverStatus === 'online' ? 'API Live' : serverStatus === 'checking' ? 'Checking...' : 'Demo Mode'}
@@ -464,7 +471,7 @@ export default function Home() {
                 ))}
               </div>
               <div className="sstack">
-                {['C++17','CMake 3.20','cpp-httplib','nlohmann/json','Docker','GitHub Actions','face-api.js','Next.js 14','Vercel'].map(t => <span key={t} className="spill">{t}</span>)}
+                {['CMake 3.20','cpp-httplib','nlohmann/json','Docker','GitHub Actions','face-api.js','Next.js 14','Vercel'].map(t => <span key={t} className="spill">{t}</span>)}
               </div>
             </>
           )}
