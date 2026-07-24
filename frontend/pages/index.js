@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Head from 'next/head'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
-const MODEL_CDN = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights'
+const MODEL_CDN = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/weights'
 
 const EMOTION_MAP = {
   happy:     { label: 'Happy',     icon: '😊', color: '#FFD93D' },
