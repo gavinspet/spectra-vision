@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectra Vision - Emotion Detection API Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .response-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .response-box.show {
+            display: block;
+        }
+        
+        .response-box.success {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+        
+        .response-box.error {
+            border-left-color: #f44336;
+            background: #fdf1f0;
+        }
+        
+        .response-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .response-content {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .status-badge.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-badge.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .status-badge.pending {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .endpoint-info {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .endpoint-info code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Spectra Vision</h1>
+            <p>Emotion Detection API Client</p>
+        </div>
+        
+        <!-- Health Check Section -->
+        <div class="card">
+            <h2>Health Check</h2>
+            <div class="endpoint-info">
+                <strong>GET</strong> <code>/health</code> - Verify server status
+            </div>
+            
+            <button onclick="checkHealth()">Check Server Health</button>
+            
+            <div id="healthLoading" class="loading">
+                <span class="spinner"></span> Checking...
+            </div>
+            
+            <div id="healthResponse" class="response-box">
+                <div class="response-header">Response:</div>
+                <div id="healthContent" class="response-content"></div>
+            </div>
+        </div>
+        
+        <!-- Emotion Detection Section -->
+        <div class="card">
+            <h2>Emotion Detection</h2>
+            <div class="endpoint-info">
+                <strong>POST</strong> <code>/api/v1/emotion</code> - Detect emotions in an image
+            </div>
+            
+            <div class="section">
+                <div class="form-group">
+                    <label for="modelId">Model ID:</label>
+                    <input type="text" id="modelId" value="emotion-v1" placeholder="e.g., emotion-v1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageData">Image Data (Base64 or description):</label>
+                    <textarea id="imageData" placeholder="Paste base64 encoded image data or description...">test-image-data</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confidenceThreshold">Confidence Threshold (optional):</label>
+                    <input type="text" id="confidenceThreshold" value="0.5" placeholder="e.g., 0.5">
+                </div>
+                
+                <button onclick="detectEmotion()">Detect Emotion</button>
+            </div>
+            
+            <div id="emotionLoading" class="loading">
+                <span class="spinner"></span> Processing...
+            </div>
+            
+            <div id="emotionResponse" class="response-box">
+                <div class="response-header">Response:</div>
+                <div id="emotionContent" class="response-content"></div>
+            </div>
+        </div>
+        
+        <!-- Server Info -->
+        <div class="card" style="background: #f8f9fa; border-top: 4px solid #667eea;">
+            <h2>Server Information</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                <strong>Status:</strong> <span id="serverStatus" style="color: #4caf50;">● Checking...</span><br>
+                <strong>URL:</strong> <code>http://localhost:8080</code><br>
+                <strong>Python Server:</strong> Flask
+            </p>
+            <button onclick="location.reload()" style="background: #999;">Refresh Page</button>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:8080';
+        
+        async function checkHealth() {
+            const loadingEl = document.getElementById('healthLoading');
+            const responseEl = document.getElementById('healthResponse');
+            const contentEl = document.getElementById('healthContent');
+            
+            try {
+                loadingEl.classList.add('show');
+                responseEl.classList.remove('show', 'success', 'error');
+                
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                loadingEl.classList.remove('show');
+                responseEl.classList.add('show', 'success');
+                contentEl.textContent = JSON.stringify(data, null, 2);
+                
+                updateServerStatus(true);
+            } catch (error) {
+                loadingEl.classList.remove('show');
+                responseEl.classList.add('show', 'error');
+                contentEl.textContent = `Error: ${error.message}`;
+                updateServerStatus(false);
+            }
+        }
+        
+        async function detectEmotion() {
+            const modelId = document.getElementById('modelId').value || 'emotion-v1';
+            const imageData = document.getElementById('imageData').value;
+            const threshold = document.getElementById('confidenceThreshold').value;
+            
+            if (!imageData.trim()) {
+                alert('Please enter image data');
+                return;
+            }
+            
+            const loadingEl = document.getElementById('emotionLoading');
+            const responseEl = document.getElementById('emotionResponse');
+            const contentEl = document.getElementById('emotionContent');
+            
+            try {
+                loadingEl.classList.add('show');
+                responseEl.classList.remove('show', 'success', 'error');
+                
+                const payload = {
+                    modelId: modelId,
+                    imageBase64: imageData
+                };
+                
+                if (threshold) {
+                    payload.confidenceThreshold = parseFloat(threshold);
+                }
+                
+                const response = await fetch(`${API_URL}/api/v1/emotion`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                loadingEl.classList.remove('show');
+                
+                if (response.ok) {
+                    responseEl.classList.add('show', 'success');
+                } else {
+                    responseEl.classList.add('show', 'error');
+                }
+                
+                contentEl.textContent = JSON.stringify(data, null, 2);
+                updateServerStatus(true);
+            } catch (error) {
+                loadingEl.classList.remove('show');
+                responseEl.classList.add('show', 'error');
+                contentEl.textContent = `Error: ${error.message}`;
+                updateServerStatus(false);
+            }
+        }
+        
+        function updateServerStatus(online) {
+            const statusEl = document.getElementById('serverStatus');
+            if (online) {
+                statusEl.innerHTML = '<span style="color: #4caf50;">● Online</span>';
+            } else {
+                statusEl.innerHTML = '<span style="color: #f44336;">● Offline</span>';
+            }
+        }
+        
+        // Check server status on page load
+        window.addEventListener('load', () => {
+            checkHealth();
+        });
+    </script>
+</body>
+</html>

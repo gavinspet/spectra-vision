@@ -1,0 +1,104 @@
+# Build directories
+build/
+build_*/
+cmake_build/
+out/
+dist/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.vim/
+.clang_complete
+.ycm_extra_conf.py
+
+# Compilation artifacts
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+CMakeFiles/
+*.cmake
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Generated files
+*.pb.cc
+*.pb.h
+*.pb.py
+*.generated.*
+
+# Test outputs
+Testing/
+*.log
+*.gtest_list
+.coverage/
+coverage.xml
+
+# Dependencies (if using vcpkg or conan)
+vcpkg_installed/
+conaninfo.txt
+conan.lock
+
+# Documentation
+docs/_build/
+docs/.doxygen_sqlite3db
+
+# Runtime artifacts
+config.json
+logs/
+*.onnx
+*.pb
+*.pth
+*.h5
+
+# Python / notebooks
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+.env
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+.~lock.*
+
+# OS-specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Performance profiling
+perf.data
+perf.data.old
+*.prof
+gprof_output
+callgrind.out.*
+
+# Sanitizer outputs
+*.ubsan
+*.asan
+*.lsan
+suppressions.txt

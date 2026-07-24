@@ -1,0 +1,148 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 16,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default Config",
+      "description": "Default build configuration",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "SV_BUILD_TESTS": "ON",
+        "SV_ENABLE_SANITIZERS": "OFF",
+        "SV_ENABLE_LTO": "OFF"
+      },
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
+      "name": "release",
+      "displayName": "Release Build",
+      "description": "Optimized production build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "SV_BUILD_TESTS": "ON",
+        "SV_ENABLE_SANITIZERS": "OFF",
+        "SV_ENABLE_LTO": "ON"
+      },
+      "binaryDir": "${sourceDir}/build/release"
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug Build",
+      "description": "Debug build with sanitizers",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "SV_BUILD_TESTS": "ON",
+        "SV_ENABLE_SANITIZERS": "ON",
+        "SV_ENABLE_LTO": "OFF"
+      },
+      "binaryDir": "${sourceDir}/build/debug"
+    },
+    {
+      "name": "release-lto",
+      "displayName": "Release with LTO",
+      "description": "Production build with Link-Time Optimization",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "SV_BUILD_TESTS": "OFF",
+        "SV_ENABLE_SANITIZERS": "OFF",
+        "SV_ENABLE_LTO": "ON"
+      },
+      "binaryDir": "${sourceDir}/build/release-lto"
+    },
+    {
+      "name": "asan",
+      "displayName": "AddressSanitizer",
+      "description": "Debug with AddressSanitizer and UBSan",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "SV_BUILD_TESTS": "ON",
+        "SV_ENABLE_SANITIZERS": "ON",
+        "SV_ENABLE_LTO": "OFF"
+      },
+      "binaryDir": "${sourceDir}/build/asan"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default-build",
+      "configurePreset": "default",
+      "jobs": 0
+    },
+    {
+      "name": "release-build",
+      "configurePreset": "release",
+      "jobs": 0,
+      "targets": ["SpectraVision"]
+    },
+    {
+      "name": "debug-build",
+      "configurePreset": "debug",
+      "jobs": 0
+    },
+    {
+      "name": "release-lto-build",
+      "configurePreset": "release-lto",
+      "jobs": 0,
+      "targets": ["SpectraVision"]
+    },
+    {
+      "name": "asan-build",
+      "configurePreset": "asan",
+      "jobs": 0
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default-test",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "stopOnFailure": false,
+        "verbose": false,
+        "noTestsFailureMessage": "No tests found!"
+      }
+    },
+    {
+      "name": "debug-test",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "verbose"
+      },
+      "execution": {
+        "stopOnFailure": true
+      }
+    }
+  ]
+}

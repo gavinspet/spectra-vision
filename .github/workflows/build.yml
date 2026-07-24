@@ -1,0 +1,68 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        cpp-standard: [17, 20]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build
+
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        choco install cmake ninja -y
+
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake ninja
+
+    - name: Configure CMake
+      run: |
+        cd backend
+        mkdir -p build
+        cd build
+        cmake -G "Ninja" -DCMAKE_CXX_STANDARD=${{ matrix.cpp-standard }} ..
+
+    - name: Build
+      run: |
+        cd backend/build
+        cmake --build . --parallel 4
+
+    - name: Run tests
+      run: |
+        cd backend/build
+        ./bin/SpectraVision --version || true
+
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run cppcheck
+      run: |
+        sudo apt-get install -y cppcheck
+        cppcheck backend/src backend/include --error-exitcode=1
+
+    - name: Check C++ standard compliance
+      run: |
+        cd backend
+        mkdir build && cd build
+        cmake -G "Ninja" ..
+        cmake --build .

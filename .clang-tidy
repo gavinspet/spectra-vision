@@ -1,0 +1,49 @@
+---
+# Clang-Tidy configuration for Spectra Vision
+# Usage: clang-tidy -config='{...}' src/**/*.cpp
+
+Checks: >-
+  *,
+  -abseil-*,
+  -altera-*,
+  -android-*,
+  -fuchsia-*,
+  -llvm-*,
+  -objc-*,
+  -zircon-*,
+  -readability-magic-numbers,
+  -readability-function-cognitive-complexity,
+  -google-build-using-namespace,
+  -google-runtime-int,
+  -misc-non-private-member-variables-in-classes,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -bugprone-exception-escape
+
+HeaderFilterRegex: '^(include|src|backend)/.*\.h$'
+
+WarningsAsErrors: '*'
+
+CheckOptions:
+  - key: readability-identifier-naming.ClassName
+    value: 'CamelCase'
+  - key: readability-identifier-naming.StructName
+    value: 'CamelCase'
+  - key: readability-identifier-naming.VariableName
+    value: 'camelBack'
+  - key: readability-identifier-naming.MemberVariableName
+    value: 'camelBack_'
+  - key: readability-identifier-naming.ConstantName
+    value: 'CONSTANT_CASE'
+  - key: readability-identifier-naming.ConstantMemberVariableName
+    value: 'CONSTANT_CASE'
+  - key: readability-identifier-naming.PrivateMemberVariableName
+    value: 'camelBack_'
+  - key: readability-identifier-naming.FunctionName
+    value: 'camelBack'
+  - key: cppcoreguidelines-init-variables.IncludeStyle
+    value: 'llvm'
+  - key: performance-move-const-arg.CheckTriviallyCopyableMove
+    value: 'true'
+  - key: modernize-use-using.IncludeStyle
+    value: 'llvm'

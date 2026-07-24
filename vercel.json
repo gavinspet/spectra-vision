@@ -1,0 +1,23 @@
+{
+  "name": "spectra-vision",
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/next.config.js",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "frontend/$1"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL": {
+      "description": "Backend API URL",
+      "required": false,
+      "default": "https://spectra-vision-api.railway.app"
+    }
+  }
+}
